@@ -1,3 +1,4 @@
+// TODO - test for known currents (seems to be working at 0-100mA)
 
 #include "helper.h"
 #include "globals.h"
@@ -12,29 +13,24 @@ void setup() {
   Serial.begin(9600);
 
   // TODO - sensor 0A configuration
-  zeroCurrent = getCurrent();
-  Serial.print("Zero Current: ");
-  Serial.println(zeroCurrent);
-  Serial.println();
 }
 
 void loop() {
-  static float current;
 
   // Toggle Power to LED Pin
   digitalWrite(LED, !digitalRead(LED));
 
-  // read data from Analog pin
-  current = getCurrent();
-
   // Display
   Serial.print("LED Status: ");
-  Serial.print(digitalRead(LED));
-  Serial.print("\t | Sensor Val: ");
-  Serial.println(current);
+  Serial.println(digitalRead(LED));
+
+  Serial.println("Fn 1:");
+  float current = getCurrent();
+
+  Serial.println();
 
   // delay 
-  delay(1000);
+  delay(5000);
 
 }
 
