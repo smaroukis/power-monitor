@@ -15,7 +15,7 @@ float getCurrent() {
   static float Vref_0 = Vref * 0.5;
   static int ADC_RES = 10;
   static int Verr= 0; // Calibration/Correction output voltage TODO - determine via testing - this is fixed voltage error not "startup/boot" zero current error
-  static int sensitivity = 22; // mv per A per datasheet
+  static float sensitivity = 22; // mv per A per datasheet
   int samples = 1;
   int reading;
   float voltage, current;
@@ -30,7 +30,7 @@ float getCurrent() {
     // Transform Raw Voltage Output → "real" Volts → Current
     voltage = (reading) * (Vref /  (pow(2,ADC_RES)-1)) - ( Vref_0 ) + Verr; 
     Serial.print("V: "); Serial.println(voltage);
-    current = voltage / sensitivity;
+    current = voltage*1000 / sensitivity;
     Serial.print("I: "); Serial.println(current);
 
     // Sum For Averaging
@@ -43,23 +43,4 @@ float getCurrent() {
   return avgCurrent; 
 }
 
-// From https://www.robotics.org.za/HW-671
-// Still needs some tweaking, but I like how it uses the internal voltage ref
-float getCurrent2() {
-  // analogReference(INTERNAL2V56);
-
-  static const float SENSITIVITY = 0.022; // Sensitivity in V/A
-  static const float VREF = 2.5; // Reference voltage at zero current (2.5V for WCS1800)
-  static const float INTERNAL_REF_VOLTAGE = 2.56;
-
-  int sensorValue = analogRead(SENSOR_PIN);
-  Serial.print("Raw: "); Serial.println(sensorValue);
-  float voltage = sensorValue * (INTERNAL_REF_VOLTAGE / 1023.0); // Convert sensor value to voltage using the internal reference voltage
-  Serial.print("V: "); Serial.println(voltage);
-  float current = (voltage - VREF) / SENSITIVITY; // Calculate current in Amperes
-  Serial.print("I: "); Serial.println(current);
-  
-  // analogReference(EXTERNAL); // return ADC to external Vref
-  
-  return current;
-}
+// Improvements: Use internal ADC voltage reference as in https://www.robotics.org.za/HW-671

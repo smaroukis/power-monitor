@@ -30,7 +30,7 @@ void loop() {
   Serial.println();
 
   // delay 
-  delay(5000);
+  delay(1000);
 
 }
 
